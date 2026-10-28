@@ -32,9 +32,11 @@ echo "[..] Setting up cgroups"
 bin/create_cgroups
 echo "[ok] cgroups set up"; echo
 
-echo "[..] Copying resolv.conf to chroot"
-cp /etc/resolv.conf /chroot/domjudge/etc/resolv.conf
-echo "[ok] resolv.conf copied"; echo
+if [ -w /chroot/domjudge/etc ]; then
+  echo "[..] Copying resolv.conf to chroot"
+  cp /etc/resolv.conf /chroot/domjudge/etc/resolv.conf
+  echo "[ok] resolv.conf copied"; echo
+fi
 
 if ! id "domjudge-run-${DAEMON_ID}" > /dev/null 2>&1; then
   groupadd -g "${RUN_USER_UID_GID}" domjudge-run

@@ -10,3 +10,7 @@ echo "default	http://localhost/api	dummy	dummy" | sudo -u domjudge tee etc/resta
 
 sudo -u domjudge make judgehost
 make install-judgehost
+
+startstop=/opt/domjudge/judgehost/lib/judge/chroot-startstop.sh
+sed -i 's/^SUBDIRMOUNTS="etc usr lib bin"$/SUBDIRMOUNTS="etc usr lib bin nix"/' "$startstop"
+grep -qx 'SUBDIRMOUNTS="etc usr lib bin nix"' "$startstop"
