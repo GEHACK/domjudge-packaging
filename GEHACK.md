@@ -28,11 +28,8 @@ the Nix chroot rules out.
   has none.
 - `docker/judgehost/scripts/start.sh` — copies `resolv.conf` into the chroot only when
   its `etc` is writable, since the Nix chroot is a read-only store path.
-- `.github/workflows/build-gehack.yml` — builds `ghcr.io/gehack/judgehost` and an
-  unmodified `ghcr.io/gehack/domserver` from one DOMjudge git ref (`main` by default, so
-  the newest commit rather than upstream's weekly `bleeding` snapshot), and prints the
-  commit and the manifest digests to pin. Judgehost and domserver must run the same
-  DOMjudge version, which is why both come from this one build.
+- `.github/workflows/build-judgehost-gehack.yml` — builds and publishes
+  `ghcr.io/gehack/judgehost`, and prints the manifest digest to pin.
 
 Nothing else diverges, so upstream stays mergeable.
 
@@ -40,6 +37,5 @@ Nothing else diverges, so upstream stays mergeable.
 
 - `genix` — `modules/judgehost/judgedaemon.nix` pins this image by manifest digest and
   mounts its own chroot into it.
-- `domjudge-deployment` — `domserver.yaml` and `judgehost.yaml` still point at upstream's
-  `domjudge/*:bleeding`; the judgehost there judges in upstream's Ubuntu chroot, not on
-  the contest toolchain, and the domserver is not the version genix's judgehost runs.
+- `domjudge-deployment` — `judgehost.yaml` still points at `domjudge/judgehost:bleeding`,
+  which judges in upstream's Ubuntu chroot, not on the contest toolchain.
