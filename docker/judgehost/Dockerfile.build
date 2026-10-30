@@ -10,7 +10,7 @@ RUN useradd -m domjudge
 RUN apt-get update \
 	&& apt-get install --no-install-recommends --no-install-suggests -y \
 	autoconf automake git pkg-config \
-	gcc g++ make zip unzip \
+	gcc g++ make zip unzip wget \
 	php-cli php-zip lsb-release debootstrap \
 	php-gd php-curl php-mysql php-json \
 	php-gmp php-xml php-mbstring composer \
