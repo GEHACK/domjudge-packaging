@@ -4,11 +4,10 @@ This fork exists for one reason: the GEHACK judgehosts judge in a chroot built b
 the exact toolchain the contest workstations run, and upstream's `judgehost` image cannot
 judge in such a chroot.
 
-The chroot itself is not built here. `genix` builds it from the team machines' own
-`pkgs.contestToolchain` (gcc, pypy3, JDK 21, Kotlin), so judge and workstation share store
-paths and therefore compiler bits, and every `nix flake update` moves both together. Its
-judgehost bind-mounts that chroot read-only over `/chroot/domjudge` in this image. See
-`genix` `modules/judgehost/chroot.nix`.
+The toolchain itself is not defined here. `genix` publishes it as the image
+`ghcr.io/gehack/genix/genix-chroot` (`chroot/Containerfile`: gcc, pypy3, JDK 21, Kotlin from
+Nix, symlinked into `/usr/local/bin`), and this image's build turns that image into
+`/chroot/domjudge` with upstream's `dj_make_chroot_docker`.
 
 An earlier version of this fork instead bootstrapped an Ubuntu 26.04 chroot and installed
 Kotlin from JetBrains to approximate the workstation versions. That drifted as soon as
@@ -22,9 +21,11 @@ the Nix chroot rules out.
   chroot into each judging, so without this every binary in a Nix chroot, which lives in
   `/nix/store`, is missing at compile and run time even though a plain
   `chroot /chroot/domjudge g++ --version` works.
-- `docker/judgehost/chroot-and-tar.sh` — still builds upstream's default chroot, so the
-  image judges on its own, and adds the empty `/nix` that `chroot-startstop.sh check` now
-  requires.
+- `docker/judgehost/chroot-and-tar.sh` — builds the chroot from the genix chroot image
+  with `dj_make_chroot_docker` instead of debootstrapping upstream's default one.
+- `docker/judgehost/Dockerfile.build` — adds `curl`, which `dj_make_chroot_docker` needs
+  to download the temporary Docker it extracts the image with, since the build container
+  has none.
 - `docker/judgehost/scripts/start.sh` — copies `resolv.conf` into the chroot only when
   its `etc` is writable, since the Nix chroot is a read-only store path.
 - `.github/workflows/build-gehack.yml` — builds `ghcr.io/gehack/judgehost` and an
