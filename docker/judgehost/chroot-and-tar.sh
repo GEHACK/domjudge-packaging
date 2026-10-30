@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Usage: https://github.com/DOMjudge/domjudge/blob/main/misc-tools/dj_make_chroot_docker.in
-/opt/domjudge/judgehost/bin/dj_make_chroot_docker -y -i ghcr.io/gehack/genix/genix-chroot:latest
+/opt/domjudge/judgehost/bin/dj_make_chroot_docker -y -i ghcr.io/gehack/genix/genix-chroot:latest || true
 
 cd /
 echo "[..] Compressing chroot"
